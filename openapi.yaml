@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: Purpose Chasers DIME API
+  version: 1.0.0
+servers:
+  - url: https://YOUR-VERCEL-DOMAIN
+paths:
+  /api/dime:
+    post:
+      operationId: runDimeAnalysis
+      summary: Compute DIME results and return structured educational analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userData]
+              properties:
+                userData:
+                  type: object
+                  required: [annualIncome, mortgageBalance, otherDebts, dependents, existingInsurance]
+                  properties:
+                    annualIncome: { type: number, minimum: 0 }
+                    mortgageBalance: { type: number, minimum: 0 }
+                    otherDebts: { type: number, minimum: 0 }
+                    dependents: { type: integer, minimum: 0 }
+                    existingInsurance: { type: number, minimum: 0 }
+                    name: { type: string }
+                    householdSize: { type: integer, minimum: 1 }
+                    maritalStatus: { type: string }
+                    educationSavings: { type: number, minimum: 0 }
+      responses:
+        "200":
+          description: Computed DIME results and structured analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userData: { type: object }
+                  results:
+                    type: object
+                    properties:
+                      debt: { type: number }
+                      incomeReplacement: { type: number }
+                      mortgage: { type: number }
+                      education: { type: number }
+                      totalNeeded: { type: number }
+                      gap: { type: number }
+                  advice:
+                    type: string
+                  adviceJson:
+                    type: object
+                    properties:
+                      whatNumbersMean: { type: string }
+                      priorities:
+                        type: array
+                        items: { type: string }
+                      coverageStrategy:
+                        type: array
+                        items: { type: string }
+                      disclaimer: { type: string }
